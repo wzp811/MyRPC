@@ -3,10 +3,7 @@ package server;
 import service.BlogService;
 import service.UserService;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class TestServer {
+public class Server {
     public static void main(String[] args) {
         UserService userService = new UserServiceImpl();
         BlogService blogService = new BlogServiceImpl();
@@ -21,7 +18,7 @@ public class TestServer {
         serviceProvide.provideServiceInterface(userService);
         serviceProvide.provideServiceInterface(blogService);
 
-        RPCServer rpcServer = new ThreadPoolRPCServer(serviceProvide);
+        RPCServer rpcServer = new NettyRPCServer(serviceProvide);
         rpcServer.start(13828);
     }
 }
