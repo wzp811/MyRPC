@@ -3,10 +3,13 @@ package client;
 import common.RPCRequest;
 import common.RPCResponse;
 import lombok.AllArgsConstructor;
+import register.ServiceRegister;
+import register.ZkServiceRegister;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 
@@ -14,9 +17,18 @@ import java.net.Socket;
 public class SimpleRPCClient implements RPCClient {
     private String host;
     private int port;
+    private ServiceRegister serviceRegister;
+
+    public SimpleRPCClient() {
+        this.serviceRegister = new ZkServiceRegister();
+    }
 
     @Override
     public RPCResponse sendRequest(RPCRequest request) {
+        // 从注册中心获取host port
+        InetSocketAddress address = serviceRegister.serviceDiscovery(request.getInterfaceName());
+        host = address.getHostName();
+        port = address.getPort();
         try {
             Socket socket = new Socket(host, port);
 

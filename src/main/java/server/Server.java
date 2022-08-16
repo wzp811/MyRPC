@@ -14,11 +14,13 @@ public class Server {
 //        serviceProvide.put("service.UserService", userService);
 //        serviceProvide.put("service.BlogService", blogService);
 
-        ServiceProvider serviceProvide = new ServiceProvider();
-        serviceProvide.provideServiceInterface(userService);
-        serviceProvide.provideServiceInterface(blogService);
+        // 这里重用了服务暴露类，顺便在注册中心注册，实际上应分开，每个类做各自独立的事
+        ServiceProvider serviceProvider = new ServiceProvider("127.0.0.1", 13828);
 
-        RPCServer rpcServer = new NettyRPCServer(serviceProvide);
+        serviceProvider.provideServiceInterface(userService);
+        serviceProvider.provideServiceInterface(blogService);
+
+        RPCServer rpcServer = new NettyRPCServer(serviceProvider);
         rpcServer.start(13828);
     }
 }
